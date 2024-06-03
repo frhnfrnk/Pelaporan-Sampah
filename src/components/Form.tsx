@@ -1,9 +1,7 @@
 "use client";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
 import MiniMap from "./MiniMap";
-import { set } from "mongoose";
 import { toast } from "./ui/use-toast";
 
 const LocationForm = () => {
