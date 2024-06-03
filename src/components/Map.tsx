@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import SuspenseWrapper from "./Suspense/SuspenWrapper";
 
 interface DataMarker {
   id: number;
@@ -24,7 +25,7 @@ interface DataMarker {
   longitude: number;
 }
 
-export default function MapComponent() {
+function Map() {
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
   const [data, setData] = useState([] as any);
   const params = useSearchParams();
@@ -134,5 +135,13 @@ export default function MapComponent() {
         </div>
       </MapGL>
     </main>
+  );
+}
+
+export default function MapComponent() {
+  return (
+    <SuspenseWrapper>
+      <Map />
+    </SuspenseWrapper>
   );
 }
