@@ -1,76 +1,187 @@
 "use client";
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import MiniMap from "./MiniMap";
 import { toast } from "./ui/use-toast";
+import InputFieldReport from "./Field/InputFieldReport";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  addReport,
+  emtpyDataReport,
+  setDataReport,
+} from "@/lib/features/report/reportSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/store";
+import ImageField from "./Field/ImageField";
+import { logout } from "@/lib/features/auth/authSlice";
+import axiosInstance from "@/lib/axios";
+import Loading from "./Loading";
 
-const LocationForm = () => {
-  const [coordinates, setCoordinates] = useState({ lat: "", lng: "" });
+const ReportForm = () => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({
-    name: "",
-    latitude: "",
-    longitude: "",
-  });
+  const reportData = useAppSelector((state) => state.report.report);
+  const dispatch = useAppDispatch();
+
+  const handleChange = (id: string, value: any) => {
+    dispatch(setDataReport({ [id]: value }));
+  };
+
+  const imageData = useAppSelector((state) => state.report.image);
+
+  const uploadImage = async (image: any) => {
+    let url = [] as any;
+    try {
+      await Promise.all(
+        image.map(async (imgFile: any, index: number) => {
+          if (typeof imgFile === "string") {
+            url.push(imgFile);
+            return;
+          }
+          try {
+            const response = await axiosInstance.post(
+              `${process.env.NEXT_PUBLIC_API_URL}/cloudinary/upload`,
+              imgFile
+            );
+
+            url.push(response.data);
+          } catch (error: any) {
+            if (error.response.data.message == "Unauthorized") {
+              console.log(error);
+              dispatch(logout());
+              toast({
+                title: "Your session is expired",
+                description: "Please login again",
+                variant: "destructive",
+              });
+              setTimeout(() => {
+                window.location.href = "/auth/login";
+              }, 1000);
+              return;
+            }
+          }
+        })
+      );
+    } catch (error) {
+      console.log(error);
+    }
+    return url;
+  };
 
   const onSubmit = async () => {
     setLoading(true);
-    const body = {
-      ...data,
-      latitude: coordinates.lat,
-      longitude: coordinates.lng,
-    };
-    await axios
-      .post("/api/locations", body)
-      .then((response) => {
-        setData({
-          ...data,
-          name: "",
-        });
+    let data = { ...reportData } as any;
+    console.log("before", data);
+    const image = imageData as any;
+    let imageUrl = [] as any;
+    if (image.length > 0) {
+      imageUrl = await uploadImage(image);
+      data = { ...data, image: imageUrl };
+    }
+    console.log("after", data);
+
+    dispatch(addReport(data))
+      .unwrap()
+      .then((res) => {
+        dispatch(emtpyDataReport());
+        setLoading(false);
+
         toast({
-          description: "Data berhasil disimpan",
-          title: "Sukses",
+          title: "Success",
+          description: "Report has been added",
+          variant: "default",
         });
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+        // if (err.response.data.message == "Unauthorized") {
+        //   dispatch(logout());
+        //   return;
+        // }
+        // toast({
+        //   title: "Error",
+        //   description: err.response.data.message,
+        //   variant: "destructive",
+        // });
       });
-    setLoading(false);
+  };
+
+  const handleCategory = (value: string) => {
+    dispatch(setDataReport({ category: value }));
   };
 
   return (
-    <form className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Nama:</label>
-        <input
-          onChange={(e) =>
-            setData({
-              ...data,
-              name: e.target.value,
-            })
-          }
-          value={data.name}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-        />
-      </div>
-      <div className="w-full h-[500px]">
-        <MiniMap setDataCoordinates={setCoordinates} />
-      </div>
+    <>
       {loading ? (
-        <div>
-          <h1>Loading...</h1>
-        </div>
+        <Loading />
       ) : (
-        <button
-          type="submit"
-          onClick={onSubmit}
-          className="w-full py-2 px-4 bg-indigo-600 text-white font-medium rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Submit
-        </button>
+        <form className="space-y-4 px-8 pb-8">
+          <InputFieldReport
+            label="Title"
+            type="text"
+            id="name"
+            value={reportData?.name}
+            wajib
+            placeholder="Title"
+            onChange={(value) => {
+              handleChange("name", value);
+            }}
+          />
+          <div className="w-full flex flex-row items-center gap-1 mb-3">
+            <label htmlFor="category" className="w-48 text-sm">
+              Category
+              <span className="text-sm text-[#ff0000]">*</span>
+            </label>
+            <div className="flex-grow">
+              <Select onValueChange={handleCategory}>
+                <SelectTrigger
+                  className="w-full focus:outline-none border-[1px] border-input rounded-md px-5 py-2 placeholder:text-sm text-sm
+          "
+                >
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Sampah">Waste</SelectItem>
+                  <SelectItem value="Infrastruktur">Infrastructure</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="w-full flex flex-row items-start gap-1 mb-3 h-[300px]">
+            <label htmlFor="category" className="w-48 text-sm">
+              Location
+              <span className="text-sm text-[#ff0000]">*</span>
+            </label>
+            <MiniMap />
+          </div>
+          <div className="w-full flex flex-row items-start gap-1 mb-3">
+            <label htmlFor="image" className="w-48 text-sm">
+              Image
+              <span className="text-sm text-[#ff0000]">*</span>
+            </label>
+            <ImageField label="Image Cover" id="cover" img={imageData!} />
+          </div>
+          {loading ? (
+            <div>
+              <h1>Loading...</h1>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              onClick={onSubmit}
+              className="w-36 py-2 px-4 bg-indigo-600 text-white font-medium rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Submit
+            </button>
+          )}
+        </form>
       )}
-    </form>
+    </>
   );
 };
 
-export default LocationForm;
+export default ReportForm;
