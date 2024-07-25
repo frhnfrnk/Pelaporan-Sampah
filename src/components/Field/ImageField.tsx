@@ -79,7 +79,10 @@ const ImageField: React.FC<ImageFieldProps> = ({ label, img, id }) => {
       ) : (
         <div className="flex justify-center flex-col">
           {image.map((img: any, index: number) => (
-            <div className="group relative flex flex-col w-[500px] rounded-xl gap-2 mb-5">
+            <div
+              key={index}
+              className="group relative flex flex-col w-[500px] rounded-xl gap-2 mb-5"
+            >
               <img src={img} alt="" className="rounded-xl w-[500px]" />
               <div className="w-[500px] h-full flex items-center justify-center absolute top-0 left-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 rounded-xl transition-opacity duration-300 "></div>
               <div className="absolute w-[500px] h-full flex items-center justify-center">

@@ -158,8 +158,11 @@ const SignupForm: React.FC<SignupFormProps> = ({
           {typeof errMessage == "object" ? (
             <ul className="w-full list-decimal px-6">
               {errMessage.map((err: any, index: number) => (
-                <li className="text-red-500 text-left text-sm -mt-2 mb-2">
-                  <p key={index}>{err}</p>
+                <li
+                  key={index}
+                  className="text-red-500 text-left text-sm -mt-2 mb-2"
+                >
+                  <p>{err}</p>
                 </li>
               ))}
             </ul>

@@ -85,7 +85,10 @@ const ImageFieldProof: React.FC<ImageFieldProps> = ({
       ) : (
         <div className="flex justify-center flex-col">
           {image.map((img: any, index: number) => (
-            <div className="group relative flex flex-col w-full rounded-md gap-2 mb-5">
+            <div
+              key={index}
+              className="group relative flex flex-col w-full rounded-md gap-2 mb-5"
+            >
               <img src={img} alt="" className="rounded-md w-full" />
               {status !== "Resolved" && (
                 <>
