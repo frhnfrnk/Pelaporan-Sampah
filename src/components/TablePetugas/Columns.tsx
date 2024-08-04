@@ -29,6 +29,10 @@ export const columns: ColumnDef<Report>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "category",
+    header: "Category",
+  },
+  {
     accessorKey: "name",
     header: "Title",
   },

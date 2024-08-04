@@ -11,7 +11,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
+import { CiMap } from "react-icons/ci";
 import {
   Table,
   TableBody,
@@ -25,6 +25,9 @@ import { useState } from "react";
 import { Input } from "../ui/input";
 import Link from "next/link";
 import { DataTablePagination } from "./Pagination";
+import { useAppDispatch } from "@/lib/store";
+import { logout } from "@/lib/features/auth/authSlice";
+import { toast } from "../ui/use-toast";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -54,6 +57,18 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    toast({
+      description: "Anda berhasil logout",
+      title: "Sukses",
+    });
+    setTimeout(() => {
+      window.location.href = "/auth/login";
+    }, 1000);
+  };
 
   return (
     <div className="w-full">
@@ -66,11 +81,16 @@ export function DataTable<TData, TValue>({
           }
           className="flex-grow"
         />
-        <Button className="bg-[#D7713E]">
+        <Button className="bg-primary">
           <Link href={"/petugas/map"}>
             <span className="hidden sm:inline">Map</span>
-            <span className="sm:hidden">+</span>
+            <span className="sm:hidden">
+              <CiMap />
+            </span>
           </Link>
+        </Button>
+        <Button className="bg-[#D7713E]" onClick={handleLogout}>
+          <span className="hidden sm:inline">Logout</span>
         </Button>
       </div>
       <div className="rounded-md border w-full">
