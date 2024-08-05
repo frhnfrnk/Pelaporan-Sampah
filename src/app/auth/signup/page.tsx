@@ -17,7 +17,7 @@ const SignupPage: React.FC = () => {
         </h1>
         <div className="border-[1px] border-gray-100  rounded-lg shadow-xl">
           <SignupForm>
-            <Link href="/petugas/login" className="font-semibold">
+            <Link href="/auth/login" className="font-semibold">
               Login
             </Link>{" "}
           </SignupForm>
