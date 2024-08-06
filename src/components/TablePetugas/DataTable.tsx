@@ -59,19 +59,8 @@ export function DataTable<TData, TValue>({
   });
   const dispatch = useAppDispatch();
 
-  const handleLogout = () => {
-    dispatch(logout());
-    toast({
-      description: "Anda berhasil logout",
-      title: "Sukses",
-    });
-    setTimeout(() => {
-      window.location.href = "/auth/login";
-    }, 1000);
-  };
-
   return (
-    <div className="w-full">
+    <div className="min-w-4xl">
       <div className="w-full flex items-center justify-between py-4 gap-4">
         <Input
           placeholder="Filter names..."
@@ -81,17 +70,6 @@ export function DataTable<TData, TValue>({
           }
           className="flex-grow"
         />
-        <Button className="bg-primary">
-          <Link href={"/petugas/map"}>
-            <span className="hidden sm:inline">Map</span>
-            <span className="sm:hidden">
-              <CiMap />
-            </span>
-          </Link>
-        </Button>
-        <Button className="bg-[#D7713E]" onClick={handleLogout}>
-          <span className="hidden sm:inline">Logout</span>
-        </Button>
       </div>
       <div className="rounded-md border w-full">
         <Table>

@@ -2,6 +2,7 @@
 import { TableDemo } from "@/components/Table";
 import { columns } from "@/components/TablePetugas/Columns";
 import { DataTable } from "@/components/TablePetugas/DataTable";
+import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
 import { logout } from "@/lib/features/auth/authSlice";
@@ -9,18 +10,29 @@ import { fetchAllReports } from "@/lib/features/report/reportSlice";
 import { useAppDispatch } from "@/lib/store";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { CiMap } from "react-icons/ci";
 import { IoIosArrowRoundBack } from "react-icons/io";
 
 const ListPage = () => {
   const [isValid, setIsValid] = React.useState(false);
-  const [data, setData] = useState([] as any);
+  const [dataPending, setDataPending] = useState([] as any);
+  const [dataInProgress, setDataInProgress] = useState([] as any);
+  const [dataCompleted, setDataCompleted] = useState([] as any);
   const dispatch = useAppDispatch();
 
   const fetchDataReport = async () => {
     dispatch(fetchAllReports())
       .unwrap()
-      .then((response: Report) => {
-        setData(response);
+      .then((response: any) => {
+        const data = response;
+        console.log("data", data);
+        setDataPending(data.filter((item: any) => item.status === "Pending"));
+        setDataInProgress(
+          data.filter((item: any) => item.status === "In Progress")
+        );
+        setDataCompleted(
+          data.filter((item: any) => item.status === "Resolved")
+        );
       })
       .catch((err: any) => {
         console.log("err", err);
@@ -75,6 +87,17 @@ const ListPage = () => {
     }
   }, []);
 
+  const handleLogout = () => {
+    dispatch(logout());
+    toast({
+      description: "Anda berhasil logout",
+      title: "Sukses",
+    });
+    setTimeout(() => {
+      window.location.href = "/auth/login";
+    }, 1000);
+  };
+
   return (
     <>
       <Toaster />
@@ -92,7 +115,6 @@ const ListPage = () => {
               />
               <p className="text-sm text-gray-500">Back</p>
             </Link>
-            <h1 className="text-3xl font-semibold">Data</h1>
             <IoIosArrowRoundBack
               className="
           invisible
@@ -102,9 +124,38 @@ const ListPage = () => {
             hover:text-gray-700
         "
             />
+            <div className="flex gap-5">
+              <Button className="bg-primary">
+                <Link href={"/petugas/map"}>
+                  <span className="hidden sm:inline">Map</span>
+                  <span className="sm:hidden">
+                    <CiMap />
+                  </span>
+                </Link>
+              </Button>
+              <Button className="bg-[#D7713E]" onClick={handleLogout}>
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
+            </div>
           </div>
           <Toaster />
-          <DataTable columns={columns} data={data} />
+
+          <div className="mb-10">
+            <h1 className="font-sirukota text-3xl text-center">Laporan Baru</h1>
+            <DataTable columns={columns} data={dataPending} />
+          </div>
+          <div className="mb-10">
+            <h1 className="font-sirukota text-3xl text-center">
+              Sedang Proses
+            </h1>
+            <DataTable columns={columns} data={dataInProgress} />
+          </div>
+          <div className="mb-10">
+            <h1 className="font-sirukota text-3xl text-center">
+              Laporan Selesai
+            </h1>
+            <DataTable columns={columns} data={dataCompleted} />
+          </div>
         </div>
       )}
     </>
