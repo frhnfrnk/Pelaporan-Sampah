@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
 import { logout } from "@/lib/features/auth/authSlice";
-import { fetchAllReports } from "@/lib/features/report/reportSlice";
-import { useAppDispatch } from "@/lib/store";
+import { fetchAllReports, setLoading } from "@/lib/features/report/reportSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/store";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { CiMap } from "react-icons/ci";
@@ -20,7 +20,10 @@ const ListPage = () => {
   const [dataCompleted, setDataCompleted] = useState([] as any);
   const dispatch = useAppDispatch();
 
+  const status = useAppSelector((state) => state.report.status);
+
   const fetchDataReport = async () => {
+    dispatch(setLoading("loading"));
     dispatch(fetchAllReports())
       .unwrap()
       .then((response: any) => {
@@ -33,6 +36,7 @@ const ListPage = () => {
         setDataCompleted(
           data.filter((item: any) => item.status === "Resolved")
         );
+        dispatch(setLoading("done"));
       })
       .catch((err: any) => {
         console.log("err", err);
@@ -48,6 +52,7 @@ const ListPage = () => {
             window.location.href = "/auth/login";
           }, 2000);
         }
+        dispatch(setLoading("done"));
       });
   };
 
@@ -102,8 +107,8 @@ const ListPage = () => {
     <>
       <Toaster />
       {isValid && (
-        <div className="mx-auto max-w-4xl flex flex-col justify-center items-center py-8">
-          <div className="w-full flex gap-5 items-center justify-between  mb-5">
+        <div className="mx-auto w-full lg:max-w-4xl flex flex-col justify-center items-center py-8">
+          <div className="px-2 lg:px-0 w-full flex gap-5 items-center justify-between  mb-5">
             <Link href={"/"} className="flex items-center">
               <IoIosArrowRoundBack
                 className="
@@ -125,36 +130,52 @@ const ListPage = () => {
         "
             />
             <div className="flex gap-5">
-              <Button className="bg-primary">
-                <Link href={"/petugas/map"}>
-                  <span className="hidden sm:inline">Map</span>
-                  <span className="sm:hidden">
-                    <CiMap />
-                  </span>
-                </Link>
-              </Button>
+              <Link href={"/petugas/map"}>
+                <Button className="bg-primary flex flex-row w-auto justify-center items-center gap-2">
+                  Map
+                  <CiMap />
+                </Button>
+              </Link>
               <Button className="bg-[#D7713E]" onClick={handleLogout}>
-                <span className="hidden sm:inline">Logout</span>
+                <span>Logout</span>
               </Button>
             </div>
           </div>
           <Toaster />
 
-          <div className="mb-10">
+          <div className="w-full mb-10">
             <h1 className="font-sirukota text-3xl text-center">Laporan Baru</h1>
-            <DataTable columns={columns} data={dataPending} />
+            {status === "loading" ? (
+              <div className="flex justify-center items-center mt-4">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
+              </div>
+            ) : (
+              <DataTable columns={columns} data={dataPending} />
+            )}
           </div>
-          <div className="mb-10">
+          <div className="w-full mb-10">
             <h1 className="font-sirukota text-3xl text-center">
               Sedang Proses
             </h1>
-            <DataTable columns={columns} data={dataInProgress} />
+            {status === "loading" ? (
+              <div className="flex justify-center items-center mt-4">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
+              </div>
+            ) : (
+              <DataTable columns={columns} data={dataInProgress} />
+            )}
           </div>
-          <div className="mb-10">
+          <div className="w-full mb-10">
             <h1 className="font-sirukota text-3xl text-center">
               Laporan Selesai
             </h1>
-            <DataTable columns={columns} data={dataCompleted} />
+            {status === "loading" ? (
+              <div className="flex justify-center items-center mt-4">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
+              </div>
+            ) : (
+              <DataTable columns={columns} data={dataCompleted} />
+            )}
           </div>
         </div>
       )}

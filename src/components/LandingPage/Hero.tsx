@@ -1,8 +1,22 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 
 const Hero = () => {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const user = localStorage.getItem("user")
+        ? JSON.parse(localStorage.getItem("user")!)
+        : null;
+      if (user) {
+        user.role === "user"
+          ? (window.location.href = "/report")
+          : (window.location.href = "/petugas/data");
+      }
+    }
+  }, []);
+
   return (
     <div
       className="relative w-full h-[100vh] flex flex-col items-center justify-center"

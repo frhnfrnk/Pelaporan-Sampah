@@ -60,8 +60,8 @@ export function DataTable<TData, TValue>({
   const dispatch = useAppDispatch();
 
   return (
-    <div className="min-w-4xl">
-      <div className="w-full flex items-center justify-between py-4 gap-4">
+    <div className="  px-3 lg:px-0 min-w-4xl">
+      <div className="w-full flex flex-col lg:flex-row items-center justify-between py-4 gap-4">
         <Input
           placeholder="Filter names..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
