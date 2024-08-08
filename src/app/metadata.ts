@@ -1,4 +1,4 @@
-import Hero from "@/components/LandingPage/Hero";
+// metadata.ts
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
   themeColor: [{ media: "(prefers-color-scheme: dark)", color: "#fff" }],
   authors: [
     {
-      name: "nusa-penida",
-      url: "https://www.nirwananusapenida.com/",
+      name: "imvinojanv",
+      url: "https://www.linkedin.com/in/imvinojanv/",
     },
   ],
   viewport:
@@ -23,13 +23,3 @@ export const metadata: Metadata = {
     { rel: "icon", url: "icons/icon-128x128.png" },
   ],
 };
-
-export default function Home() {
-  return (
-    <main className="bg-[#F8EEEB] flex h-screen flex-col items-center justify-between">
-      <div className="overflow-hidden w-full  items-center justify-between  lg:flex flex-col">
-        <Hero />
-      </div>
-    </main>
-  );
-}
