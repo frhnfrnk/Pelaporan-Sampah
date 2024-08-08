@@ -74,14 +74,12 @@ const ReportForm = () => {
   const onSubmit = async () => {
     setLoading(true);
     let data = { ...reportData } as any;
-    console.log("before", data);
     const image = imageData as any;
     let imageUrl = [] as any;
     if (image.length > 0) {
       imageUrl = await uploadImage(image);
       data = { ...data, image: imageUrl };
     }
-    console.log("after", data);
 
     dispatch(addReport(data))
       .unwrap()
@@ -119,7 +117,7 @@ const ReportForm = () => {
       {loading ? (
         <Loading />
       ) : (
-        <form className="space-y-4 px-8 pb-8">
+        <form className="space-y-4 px-4 lg:px-8 pb-8">
           <InputFieldReport
             label="Title"
             type="text"
@@ -131,12 +129,15 @@ const ReportForm = () => {
               handleChange("name", value);
             }}
           />
-          <div className="w-full flex flex-row items-center gap-1 mb-3">
-            <label htmlFor="category" className="w-48 text-sm">
+          <div className="w-full flex flex-col lg:flex-row items-center gap-1 mb-3">
+            <label
+              htmlFor="category"
+              className="w-full lg:w-48 text-sm mb-2 lg:mb-0"
+            >
               Category
               <span className="text-sm text-[#ff0000]">*</span>
             </label>
-            <div className="flex-grow">
+            <div className="w-full grow-0 lg:grow">
               <Select onValueChange={handleCategory}>
                 <SelectTrigger
                   className="w-full focus:outline-none border-[1px] border-input rounded-md px-5 py-2 placeholder:text-sm text-sm
@@ -151,15 +152,21 @@ const ReportForm = () => {
               </Select>
             </div>
           </div>
-          <div className="w-full flex flex-row items-start gap-1 mb-3 h-[300px]">
-            <label htmlFor="category" className="w-48 text-sm">
+          <div className="w-full flex flex-col lg:flex-row items-start gap-1 mb-3 h-[300px]">
+            <label
+              htmlFor="category"
+              className="w-full lg:w-48 text-sm mb-2 lg:mb-0"
+            >
               Location
               <span className="text-sm text-[#ff0000]">*</span>
             </label>
             <MiniMap />
           </div>
-          <div className="w-full flex flex-row items-start gap-1 mb-3">
-            <label htmlFor="image" className="w-48 text-sm">
+          <div className="w-full flex flex-col lg:flex-row items-start gap-1 mb-3">
+            <label
+              htmlFor="image"
+              className="w-full lg:w-48 text-sm mb-2 lg:mb-0"
+            >
               Image
               <span className="text-sm text-[#ff0000]">*</span>
             </label>

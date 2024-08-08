@@ -109,7 +109,7 @@ export default function MiniMap() {
   };
 
   return (
-    <main className="flex-grow h-full">
+    <main className="w-full grow-0 lg:grow h-full">
       <MapGL
         ref={mapRef}
         mapboxAccessToken={mapboxToken}

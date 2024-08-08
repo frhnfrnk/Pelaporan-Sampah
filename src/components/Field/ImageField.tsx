@@ -59,10 +59,10 @@ const ImageField: React.FC<ImageFieldProps> = ({ label, img, id }) => {
   };
 
   return (
-    <div className="flex-grow flex flex-col gap-1 mb-3 ">
+    <div className="w-full grow-0 lg:grow flex flex-col gap-1 mb-3 ">
       {image.length == 0 ? (
         <label
-          className="flex justify-center flex-col items-center border-2 border-[#e2e2e2] w-1/4 aspect-square rounded-xl cursor-pointer"
+          className="flex justify-center flex-col items-center border-2 border-[#e2e2e2] w-1/2 lg:w-1/4 aspect-square rounded-xl cursor-pointer"
           htmlFor="fileInput"
         >
           <MdOutlineAddPhotoAlternate className="text-neutral-500 text-4xl" />

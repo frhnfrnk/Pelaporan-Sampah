@@ -4,21 +4,28 @@ import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
 import React, { useEffect, useState } from "react";
 import { columns } from "@/components/TablePelapor/Columns";
-import { useAppDispatch } from "@/lib/store";
-import { getHistoryReport } from "@/lib/features/report/reportSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/store";
+import {
+  getHistoryReport,
+  setLoading,
+} from "@/lib/features/report/reportSlice";
 import { logout } from "@/lib/features/auth/authSlice";
+import { stat } from "fs";
 
 const AllReportsPage = () => {
   const [isValid, setIsValid] = useState(false);
   const [data, setData] = useState([] as any);
   const dispatch = useAppDispatch();
 
+  const status = useAppSelector((state) => state.report.status);
+
   const fetchDataReport = async () => {
+    dispatch(setLoading("loading"));
     dispatch(getHistoryReport())
       .unwrap()
       .then((response) => {
-        console.log("response", response);
         setData(response);
+        dispatch(setLoading("done"));
       })
       .catch((err: any) => {
         console.log("err", err);
@@ -34,6 +41,7 @@ const AllReportsPage = () => {
             window.location.href = "/auth/login";
           }, 2000);
         }
+        dispatch(setLoading("done"));
       });
   };
 
@@ -67,11 +75,17 @@ const AllReportsPage = () => {
     <>
       <Toaster />
       {isValid && (
-        <div className="mx-auto max-w-4xl flex flex-col justify-center items-center py-8">
+        <div className="mx-auto w-full lg:max-w-4xl flex flex-col justify-center items-center py-8">
           <h1 className="text-3xl font-semibold font-sirukota">
             Report History
           </h1>
-          <DataTable columns={columns} data={data} />
+          {status === "loading" ? (
+            <div className="flex justify-center items-center mt-4">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
+            </div>
+          ) : (
+            <DataTable columns={columns} data={data} />
+          )}
         </div>
       )}
     </>

@@ -71,24 +71,26 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="w-full">
-      <div className="w-full flex items-center justify-between py-4 gap-4">
+    <div className="w-full px-3 lg:px-0">
+      <div className="w-full flex flex-col lg:flex-row items-center justify-between py-4 gap-2 lg:gap-4">
         <Input
-          placeholder="Search title..."
+          placeholder="Cari laporan..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="flex-grow"
         />
-        <Button>
+        <Button className="w-full lg:w-auto">
           <Link href={"/report/add"}>
-            <span className="hidden sm:inline">Report</span>
-            <span className="sm:hidden">+</span>
+            <span className="">Tambahkan Laporan +</span>
           </Link>
         </Button>
-        <Button className="bg-[#D7713E]" onClick={handleLogout}>
-          <span className="hidden sm:inline">Logout</span>
+        <Button
+          className="bg-[#D7713E] w-full lg:w-auto"
+          onClick={handleLogout}
+        >
+          <span className="">Logout</span>
         </Button>
       </div>
       <div className="rounded-md border w-full">
