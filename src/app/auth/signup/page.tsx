@@ -4,8 +4,9 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Signup | Deepublish",
-  description: "Signup to Deepublish to read your favorite books.",
+  title: "Daftar - Pelaporan Titik Sampah & Infrastruktur Nusa Penida",
+  description:
+    "Bergabung dengan komunitas pelapor untuk menjaga kebersihan dan infrastruktur Nusa Penida. Daftar sekarang untuk mulai melaporkan titik sampah dan masalah infrastruktur di sekitar Anda.",
 };
 
 const SignupPage: React.FC = () => {

@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Login | Deepublish",
-  description: "Login to Deepublish to read your favorite books.",
+  title: "Login - Pelaporan Titik Sampah & Infrastruktur Nusa Penida",
+  description:
+    "Masuk ke akun Anda untuk melaporkan titik sampah dan masalah infrastruktur di Nusa Penida. Bersama-sama kita bisa menjaga kebersihan dan kerapihan pulau ini.",
 };
 
 export default function LoginLayout({
