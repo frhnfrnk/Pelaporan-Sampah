@@ -48,12 +48,15 @@ function Map() {
   const mapRef = useRef<MapRef | null>(null);
   const dispatch = useAppDispatch();
 
+  const [loading, setLoading] = useState(true);
+
   const fetchDataReport = async () => {
+    setLoading(true);
     dispatch(fetchAllReports())
       .unwrap()
       .then((response: Report) => {
-        console.log("response", response);
         setData(response);
+        setLoading(false);
       })
       .catch((err: any) => {
         console.log("err", err);
@@ -69,6 +72,7 @@ function Map() {
             window.location.href = "/auth/login";
           }, 2000);
         }
+        setLoading(false);
       });
   };
 
@@ -106,6 +110,11 @@ function Map() {
 
   return (
     <main className={classes.mainStyle}>
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      )}
       <MapGL
         ref={mapRef}
         mapboxAccessToken={mapboxToken}
