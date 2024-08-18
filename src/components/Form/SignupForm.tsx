@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import InputField from "../Field/InputField";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Toaster } from "../ui/toaster";
 import { toast } from "../ui/use-toast";
 import InputPasswordField from "../Field/InputPasswordField";
@@ -11,6 +11,7 @@ import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
 import InputPhoneNumberField from "../Field/InputPhoneNumber";
 import Loading from "../Loading";
+import Link from "next/link";
 
 interface SignupFormProps {
   isModal?: boolean;
@@ -31,6 +32,8 @@ const SignupForm: React.FC<SignupFormProps> = ({
     retypePassword: "",
     role: "user",
   });
+
+  const pathName = usePathname();
 
   const [disableSubmit, setDisableSubmit] = useState(true);
   const [errMessage, setErrMessage] = useState([]);
@@ -180,9 +183,21 @@ const SignupForm: React.FC<SignupFormProps> = ({
             />
           </div>
 
-          <p className="text-center text-sm mt-3">
+          <p className="text-center text-sm my-3">
             Already have an account? {children}
           </p>
+          <Link
+            href={
+              pathName === "/auth/petugas/signup"
+                ? "/auth/signup"
+                : "/auth/petugas/signup"
+            }
+          >
+            <p className="text-center text-sm my-3 underline text-blue">
+              Signup as{" "}
+              {pathName === "/auth/petugas/signup" ? "User" : "Petugas"}
+            </p>
+          </Link>
           <Toaster />
         </form>
       )}
